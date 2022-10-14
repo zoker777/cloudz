@@ -1,0 +1,293 @@
+编程语言：
+编译型:一次编译<解析为机器语言>，处处运行<不能跨平台>，运行快 ##c、go
+解释性:边编译<如jvm虚拟机，python Interpreter>边运行<能跨平台>，运行慢 ##python java
+
+一、基础语法：
+变量<字母、数字、下划线>：先定义再调用，小写+下划线、常量：大写+下划线
+    ##小结：1、将数值/字符串直接赋值给变量，理解为在内存中开辟一个空间出来存储值，然后变量名指向这个内存空间 2、将一个变量赋值给另一个变量，理解为将新变量名直接指向旧变量数值所在的内存空间
+    ##is作用：1、判断两个变量的内存地址是否相同a is b等同id(a) == id(b) 2、判断某个变量是否为**数据类型type(a) is str 3、判断变量是否为None：a is None、==判断两个变量的值是否相同a == b
+    ##None(空)和false区别？is和==区别？判断语句中not的用法？
+    ##在python中 None, False, 空字符串"", 数字0, 空元组(), 空列表[], 空字典{} 都相当于False。只有None is None。if x is None:判断x是否为空/None、if not x:判断x是否为false。
+    ##比如if not x结果为true，那么x可能是空列表，也可能是None，或者空字典，整数0等。使用if not x这种写法的前提是：必须清楚x等于None,  False, 空字符串"", 0, 空列表[], 空字典{}, 空元组()时对你的判断没有影响才行。所以平时少用if not x，对每种数据类型进行判断尽量单独判断用==或is，None用is判断，其他用==判断。(单独判断，如a==''、b==0、c is None等)
+基本数据类型：int、float、str、bool、list  ##扩展：tuple、dict、set
+    str<可以理解为特殊的列表，常用方法如下>：
+        查：find/index找第一个出现字符的索引、count统计字符个数
+        改：replace字符串内容替换、capitalize首字母大写、casefold/lower/upper全变小写/大写、swapcase大写变小写，小写变大写、lstrip/rstrip/strip去掉字符串首尾的空白符号<空格、\t、\n>
+            join<'|'.join(list)>拼接列表元素为str、split将字符串拆分为列表
+        判断：isdigit判断内容是否为整数、islower/isupper判断全小写/大写、isspace判断是否为空格、endswith结尾、startswith开头
+        格式化：format字符串的格式化输出<详见下>、ljust/rjust显示多少个字符，字符串个数不够，用指定字符拼接、center格式化居中显示
+            ##字符串的单引号和双引号都无法取消特殊字符的含义，如果想让引号内所有字符均取消特殊意义？1、在引号前面加r，如name＝r'a\ta'   2、在特殊字符前面再加一条\，如name='a\\ta'
+    bytes<二进制形式数据类型>:以16进制形式表示，2个16进制数构成一个byte，以b''来标识字节串。
+        ##str1.encode('字符编码')得到字符串str1的bytes类型数据。字符存硬盘or网络传输字符都要变为bytes才行。
+        ##文件对象1、模式w不能写二进制数据(写str) 2、模式wb不能写字符串(写bytes) 3、模式wb不能携带参数encoding
+        ##f=open(file='1.txt',encoding='gbk',mode='w') f.write('aa')、f=open(file='1.txt',mode='wb') f.write('aa'.encode('utf-8'))
+    list：增(append、insert、extend)、删(del：根据索引删、pop：根据索引删-会返回删除值、remove：从左至右删除第一个匹配的值、clear)、改(=)、查(index、count、in、下标、切片[-1:-5:-1])
+        ##扩展：列表反转：1、reverse 2、[::-1]、列表排序：sort、长度：len、最大值/最小值：max/min
+        ##定义了一个空列表list = []，长度为0，比如list[0]=1或list[1]=2都会报错，这种操作是修改操作<不是赋值操作>，只能修改已经存在的元素，而现在列表中还没有元素。
+        ##因此只能append<列表最后追加一个元素>、insert<在列表任何位置前插入一个元素>或extend<将另外一个列表的所以元素合并到本列表的末尾>
+        ##删除list.pop()或del list() 、元素循环：for i in list1: print(i)、索引循环：for i in range(len(list1)): print(list1[i])
+    tuple<被称为只读列表，不能增删改，只能查>:查(index、count、in、下标、切片[-1:-5:-1])
+    dict：增<dict[key]=value、dict.setdefault(key,value)、update(类似于列表的extend)>、删<del：删除不返回value、pop：删除返回value、clear>、改<dict[key]=value>、查<dict[key]、get(key,default=None)、in>
+        ##扩展：dic.keys()、dic.values()、dic.items()、遍历字典推荐方法<效率最高>：for k in dic: print(k,dic[k])
+        ##长度：len、字典中赋值语句可以是修改，也可以是新增、删除dict.pop('k','default')：无key返回default 或del dict['k']：无key报错、字典不能直接更改key的名字，只能先创建新的键值对，然后再把想改的键值对删除
+    set<主要用来去重和关系运算>:增(add)、删(discard：不存在删除也不会报错、remove：不存在删除报错、pop:随机删除、clear)、不能改、查(in)
+        ##扩展：列表去重list_a=list(set(list_a))、关系运算(& | - ^ isdisjoint issubset issuperset)
+        ##遍历方法和列表一样
+读取用户输入：age=int(input('input your name')) 、input方法接收到的所有数据都以字符串的格式处理
+字符串的格式化输出：
+    1、s='a{0}b{1}c{0}'                     s.format(A,B) -> 'aAbBcA'
+    2、s='a{name}b{age}c{name}'             s.format(name='tom',age=23) -> 'atomb23ctom'
+    3、s='''a%db%sc%d''' % (23,'张三',23)   print(s) -> 'a23b张三c23'
+    4、s=f'i am {VAR_NAME}'
+运算符：算数运算、比较运算、赋值运算、逻辑运算  ##在python中是没有&&及||这两个运算符的，取而代之的是英文and和or。其他运算符没有变动
+    算数运算：+ - * / % ** // 
+    比较运算：== != > < >= <=
+    赋值运算：= += -= *= /= %= **= //=
+    逻辑运算：and or not
+
+if判断语句：
+    if 条件表达式:
+        语句
+    elif 条件表达式:
+        语句
+    else:
+        语句
+    ##扩展：三元运算：sex='B' if name == 'tom' else 'G'
+for循环语句：
+    for i in list:
+        print(i)
+while循环语句：
+    while 条件表达式:
+        语句
+
+终止循环：break中止循环、continue中止本次循环、return中止函数<可中止多层循环,多层循环放在函数里>、exit退出程序
+
+编码：终端编码<cmd、terminal、putty/xshell>、shell环境编码<即系统编码>、文本编辑器编码<存+读-读来展示在编辑器界面上：存和读的编码>、应用程序编码<读-读来编译：# -*- encoding:utf-8 -*->
+字符编码的转换<win默认编码gbk、linux/mac默认编码utf-8>：
+    ##unicode<万国码>：跟所有的编码之间都有映射关系。在Py3，内存里的字符串是以unicode编码的。如果utf-8格式文件在win不能看，可以解码成unicode，再由unicode编码成gbk即可。
+    ##utf-8 bytes(win上乱码) --(utf-8编码/解码)-- unicode str --(gbk编码/解码)-- gbk bytes(win可读)
+    ##文件的编码转换：1、程序转换<见印象笔记> 2、pycharm等ide来转换<如下>
+    ##pycharm中将一个gbk文件的文件编码改成utf-8，会提示reload或者convert，reload不会改变文件的编码，是用另外一种编码来打开文件，convert会改变源文件的编码<要convert文件编码，那么必须先用正确的编码打开文件才能convert，否则强行convert那么文件会被损坏>
+深浅copy：
+    大多数场景深copy(deepcopy)用不到的，比较耗内存，只有涉及到完整克隆的场景才会用到。
+    比如一个字典s。s1 = s那么两个字典的内存地址一样，如果s1 = s.copy()或 s1 = s.deepcopy()那么两个字典的内存地址不一样
+
+二、文件操作
+文件操作模式：r只读、w创建/覆盖写、a追加写 ##r+、a+很少用、w+没什么用
+    f.read(2)从光标处往后读取两个字符、f.readline()读一行、f.read()读所有、f.readlines()每一行作为列表的一个元素
+遍历文件：1、直接for line in f:遍历拿到每一行 2、文件内容存储到列表中，list=f.readlines();for line in list:来遍历拿到每一行
+    ##数据刷盘<从内存中写入磁盘>：f.write()后文件中暂时看不到数据1、f.flush() 2、f.close() 3、程序执行完毕自动f.close()
+    ##utf-8一个中文字符一般占3个字节、gbk一个中文字符一般占2个字节
+修改文件内容<如用r+模式打开文件，write写入数据，只能以覆盖的方式写入数据，不合理>：因此用从旧文件一行行的读入，修改，再写入新文件，最后重命名新文件的方式来修改文件内容。
+    import os
+    old_file='test.txt'
+    new_file='test.txt.new'
+    f=open(old_file,'r')
+    f_new=open(new_file,'w')
+    old_str='深圳'
+    new_str='广州'
+    for line in f:
+        if '深圳' in line:
+            line=line.replace(old_str,new_str)
+        f_new.write(line)
+    f.close()
+    f_new.close()
+    os.rename(new_file,old_file) ##windows用os.replace
+
+其它扩展：
+    ##文件中什么内容都没有，那么readline读取的内容是一个空字符串''。空字符串''无法转换成空字典{}，字符串装换成字典dict1=eval('{}')
+    ##'w'模式下，f.write只能写str，写其他数据类型需要转换下。如f.write(str(dict1))
+    ##判断变量的类型isinstance或type、判断空格是否在str中，if ' ' in str、去掉str中的空格，str.replace(' ','')
+        if(str1.startswith('A') or str1.startswith('a')) and str1.endswith('c') 判断字符串是否以A或a开头并且以c结尾
+        4/2=2.0是浮点数，不是整数。因此判断一个数能否整除某个数，应该用x%y判断余数是否为0的方式来判断是否能够整除
+        k.__abs__()求k的绝对值
+    ##使用for循环删除列表中的所有值为1的元素？ #不能正顺序删除，会出现for循环索引越界
+        for i in range(len(list1)-1,-1,-1):
+            if c[i] == 1:
+                del c[i]
+    ##range(1, 10)：1-9、range(10)：0-9、range(1, 10, 2)，2为步长，1，3，5，7，9
+        range(10,-1,-1)反向输出10,9,8,7,6,5,4,3,2,1,0。此时的结束值为-1，而-1取不到，因此取到0，长是-1，相当于每次-1
+        x = range(5,-1,-1)是range数据类型、x = list(range(5,-1,-1))将range数据类型转换成list数据类型
+        小结：只要是用循环遍历删除列表中数据时，记得倒着删，否则会越界报错。
+    ##数据类型间的互相转换
+        str-list:list(s)、str-tuple:tuple(s)、str-dict:dict=eval('{}')、str-set:set=eval('{1,2}')
+        dict和tuple间的转换：list(tuple1)、tuple(list1)
+        list-dict(key按10递增)：for k,v in enumerate(li,10): dic[k]=v
+
+三、函数
+定义：
+    def sayhi():
+        print('hello!')
+    sayhi() #调用函数
+参数：
+    定义时：形参<位置参数、默认参数、非固定参数> ##<位置参数必须在默认参数or关键参数的前面>
+    调用时：实参<位置参数、关键参数、非固定参数>
+    ##实参与形参的对应：如果形参是位置参数，那么实参必须以位置参数or关键参数与其对应；如果形参是默认参数，那么实参可以不写参数<采用默认值>or关键参数<覆盖默认值>来对应
+    ##调用函数时，多余的位置参数传给args作为元组，*args取出元组的所有值、多余的关键参数传给kwargs作为字典，**kwargs取出字典的所有键值
+    ##例子：def reg(name,age,course='py',country='cn')、def reg(name,age,*args,**kwargs) 调用：reg('tom',24,'cn','py',sex='M',city='luzhou') args=('cn','py') kwargs={'sex':'M','city':'luzhou'}
+函数返回值：
+    函数的默认返回值为None。返回具体数值例子：return True；也可以返回多个值，return 1,2 会被放在一个元组里返回
+函数作用域：
+    函数里定义的变量为局部变量，函数外程序中定义的变量为全局变量。函数里先找局部变量，没有再找全局变量；函数外直接找全局变量。查找顺序：本函数内的局部变量-父级函数的局部变量-全局变量
+    函数里不能直接修改全局变量，只能引用。如果传入的参数是字典or列表，不能修改字典or列表整体，但是可以修改字典or列表内的某个值。
+    ##全局变量即使没有传参给函数，函数内也能直接引用的，但是建议用传参来引用，避免一些不必要的问题，例子如下：
+    ##如果在函数内想引用全局变量n的值，如果n在函数内的赋值语句左面<n = n//2> or 比较语句左面<a[n] > 2>，那么必须给函数传递参数n，因为在语句左面即为创建一个变量<是内部变量，有内部变量n了，就不会去找全局变量n了，就会报错未定义变量n>
+嵌套&匿名&高阶&递归函数：
+    嵌套函数：函数里面又定义了函数，主要用于装饰器。
+    匿名函数：主要用于和其它函数搭配使用，max,min,sorted,map,reduce,filter，如下：
+        ##res=map(lambda x:x**2,[1,2,3]);for i in res:print(i)获取可迭代对象中每个值的平方,匿名函数中的语句最复杂也只能是三目运算语句，不能加for，while等。
+        ##基本定义：calc=lambda x,y:x**y;print(calc(2,5))
+    高阶函数：字符串、数字、list、dict、set、tuple都可以作为函数的输入参数，如果将另一函数作为此函数的输入参数，那么此函数是高阶函数。
+    递归函数：函数内调用其它传入的函数--高阶函数、函数内调用函数本身--递归函数。递归次数是有最大值的<好像是1000次>，当然这个最大值是可以更改的。
+        ##涉及到多次循环or递归之类的代码，排错时最好使用调试工具来排错，可以看到每一步中变量值的变化情况
+        ##例子：求100不断除以2直到商为0为止，打印每次除的商。
+            def calc(n):
+                n=int(n/2)
+                print(n)
+                if n > 0:
+                    calc(n)
+            calc(100)
+内置函数：abs绝对值、dir返回对象所有的可用属性函数、enumerate返回列表的索引和元素、eval把字符串形式的list,dict,set,tuple转换为其原有的数据类型、filter对list,dict,tuple,set等可迭代对象进行过滤、map
+    ##float转成浮点数、int、globals/locals打印所有全局/局部变量,放在一个字典里、id、input、isinstance、type、len、max/min/sum、print、open、range、round可以把小数4舍5入成整数、str、set、list、tuple等
+
+四、常用模块
+模块就是py文件<里面包含了多个功能函数可供调用>。包含多个模块的文件夹叫包。 --py文件名一定不要和模块同名，否则会出现无法导入模块的问题
+模块分为三类：1、内置标准模块(又叫标准库)，执行help('modules')查看所有自带模块列表 2、第三方开源模块<需要pip install联网安装> 3、自定义模块<自己写的模块上传至开源社区就变成第三方模块了>
+模块导入方式：1、导入模块impore os,sys<调用函数方式：os.rename()> 2、直接导入模块中函数from os import rename,path<调用函数方式：rename()>
+    ##导入后重命名：import 模块名 as 别名、from 模块名 import 函数名 as 别名、从包的某个模块中导入函数：from 包.模块名 import 函数、from 包 import 模块名、from 模块名.函数名 import 子函数名
+    ##from 模块名 import *导入一个模块下所有函数，不建议使用
+        <__init__.py文件作用：目录下的模块只能一个一个地导入，创建__init__.py文件后就能用from 包 import * 或import 包，默认导入所有模块，但是也可以在文件中定义只导入部分模块，导入包中模块时会先执行__init__.py文件的内容>
+    ##自定义模块：创建一个py文件就是一个模块，就可以在另外一个py文件中导入<导入模块就是执行这个模块py文件中的代码>
+自定义模块查找路径：sys.path会打印出查找模块的所有路径，第一个路径为当前执行程序的所在目录，后面还有python安装目录/lib目录(存放内置模块目录)，以及python安装目录/lib/site-packages目录(存放第三方模块目录)
+    ##如果我们想在任何地方都可以导入自定义的模块，可以把模块放在sys.path的任一路径中，一般放在site-packages目录下
+第3方开源模块的安装使用：pip是Python包管理工具，会自动解决依赖关系，并自动去镜像网站/仓库地址下载相关软件包来安装。类似于yum。该工具提供了对Python包的查找、下载、安装、卸载的功能。Python 3.4 及后续版本已经默认安装了pip。
+    ##pip的安装：如果确实是需要手动安装，Linux：python get-pip.py、Windows(cmd下)：python.exe get-pip.py
+    ##pip使用：pip install 模块名(or 模块名==1.0.4 or 模块名>=1.0.4指定安装版本)、模块安装后会存放在本地的相应目录中，安装后我们就可以直接import导入来使用模块
+    ##pycharm中安装第三方模块：如果import 模块是红色的，说明本地无此模块，需要安装
+    ##pip和pip3，pip安装模块在python2.7/site-packages目录下，pip3安装模块在python3.7/site-packages目录下
+    ##pip默认国外下载安装比较慢，可以指定其它国内源来安装，如pip install -i pip源的url地址 模块名 --trusted-host 网站域名
+
+常用模块：
+    ##dir(sys) #dir()方法查看模块中可用的方法、查询模块的帮助信息：help(sys)或ctrl+鼠标左击模块名、查看函数参数的帮助说明：如help(datetime.datetime.now)
+
+系统调用模块：os & sys：
+    ##os模块中重命名函数：Linux上为rename，Windows上为replace
+    ##涉及到对系统文件，目录or路径进行操作时用os模块、涉及到获取系统相关信息or程序参数则用sys模块
+    os模块的部分常用属性(Windows系统）：
+        os.name	返回你电脑的操作系统（Windows系统下会返回’nt’）
+        os.curdir	指代当前目录，也可以用’.'来表示当前目录
+        os.pardir	指代当前目录的上一级目录，也可以用’. .'表示
+        os.sep	返回路径名分隔符，’//’，也可以是’\’
+        os.extsep	返回文件扩展名分隔符 ， windows下扩展名分隔符为’.’
+        os.linesep	返回文本文件的行分隔符,’\n\r’
+    os模块的部分常用方法：
+        os.chdir(path)	改变当前工作目录，path必须为字符串形式的目录
+        os.getcwd()	返回当前工作目录
+        os.listdir(path)	列举指定目录的文件名
+        os.mkdir(path)	创建path指定的文件夹,只能创建一个单层文件，而不能嵌套创建，若文件夹存在则会抛出异常
+        os.makedirs(path)	创建多层目录 ，可以嵌套创建
+        os.move(file_name)	删除指定文件
+        os.rmdir(path)	删除单层目录，遇见目录非空时则会抛出异常
+        os.removedirs(path)	逐层删除多层目录
+        os.rename(old,new)	文件old重命名为new
+        os.system(command)	运行系统的命令窗口
+        os.chmod()改变目录权限
+        os.walk()生成目录树下的所有文件名，主要用来遍历一个目录及其子目录下的所有文件。os.walk会将遍历的目录放在列表的第一个位置，此目录下的目录放在第二个位置，此目录下的文件放在第三个位置
+    os.path模块常用方法：
+        abspath(path)	返回文件或目录的绝对路径
+        basename(path)	返回path路径最后一个\\后的内容，可以为空
+        dirname(path)	返回path路径最后一个\\之前的内容
+        split(path)	返回一个（head,tail）元组，head为最后\\之前的内容；tail为最后\\之后的内容，可以为空。os.path.split()返回（dirname(),basename())元组
+        splitext(path)	返回指向文件的路径和扩展名。os.path.splitext()(返回 filename,extension)元组
+        exists(path)	查询路径path是否存在
+        isabs(s)	判断指定路径s是否为绝对路径
+        isdir(path)	判断path指向的是否是文件夹
+        isfile(path)	判断path是否指向文件
+        join(path,*path)	将两个path通过\\组合在一起，或将更多path组合在一起。os.path.join()将分离的各部分组合成一个路径名
+        getatime(filename)	返回文件的最近访问时间,返回的是浮点数时间
+        getctime(filename)	返回文件的创建时间
+        getmtime(filename)	返回文件的修改时间
+        getsize()返回文件大小
+    sys模块常用方法：
+        sys.argv     #命令行参数List，第一个元素是程序本身路径。sys.argv是一个列表， 该列表存储了命令行参数，当采用脚本方式运行时，可以方便的处理命令行参数
+        sys.platform    #返回操作系统平台名称
+        sys.version #获取python版本信息
+        sys.getdefaultencoding  #返回当前你所用的默认的字符编码格式
+        sys.setdefaultencoding(name) #用来设置当前默认的字符编码
+        sys.getfilesystemencoding #返回将Unicode文件名转换成系统文件名的编码的名字
+        sys.stdout     #标准输出  ##python中调用print时，事实上调用了sys.stdout.write(obj+'\n')、sys.stdout.write('hello' + '\n')等价print('hello')
+        sys.stdin      #标准输入  ##sys.stdin.readline( )会将标准输入全部获取，包括末尾的'\n'，因此用len计算长度时是把换行符'\n'算进去了的，但是input( )获取输入时返回的结果是不包含末尾的换行符'\n'的
+            ##因此如果在平时使用sys.stdin.readline( )获取输入的话，不要忘了去掉末尾的换行符，可以用strip( )函数（sys.stdin.readline( ).strip('\n')）或sys.stdin.readline( )[:-1]这两种方法去掉换行
+        sys.stderr     #错误输出
+        sys.stdin.readline   #从标准输入读一行，sys.stdout.write("a") 屏幕输出a
+        sys.exit函数来中断代码的执行。该函数也可以添加一个参数，默认为0，表示正常退出，其他参数表示非正常退出，支持用字符串来自定义错误信息
+        sys.path     #该变量存储了python寻找模块的路径
+        sys.modules.keys()   #该变量是一个字典，存储了已经导入的模块 
+        sys.modules    #返回系统导入的模块字段，key是模块名，value是模块
+    
+time & datetime模块：
+    ##UTC时区（0时区）与东8区差8个小时，中国为UTC+8(东8区)
+    time:
+        当前时区(UTC+8)时间的时间戳：time.time()、时间元组：time.localtime(time.time())、时间字符串：time.strftime('%Y/%m/%d %H:%M:%S',time.localtime())；
+        UTC时区（0时区）的时间戳：、时间元组：time.gmtime(时间戳)、时间字符串：time.strftime('%Y/%m/%d %H:%M:%S',time.gmtime())
+        三种时间格式间的转换：
+            时间戳-时间元组-时间字符串：
+            time.localtime(time.time())、time.strftime('%Y/%m/%d %H:%M:%S',time.localtime())
+            时间字符串-时间元组-时间戳
+            struct_time=time.strptime('2016/05/22 16:39:02','%Y/%m/%d %H:%M:%S')、time.mktime(struct_time)
+        time.sleep(secs)：线程推迟指定的时间运行，单位为秒
+    datetime<更加直观>:
+        d=datetime.datetime.now() ##d.timestamp、d.today()、d,year
+        datetime.date.fromtimestamp(32233)：时间戳转换为datetime日期类型
+        时间运算：d-datetime.timedelta(day=3)、d-datetime.timedelta(day=3，minutes=5)
+        时间替换：d.replace(year=2021,month=12,day=28)
+        显示其它时区的时间：datetime.datetime.now(tz=pytz.timezone('Asia/Shanghai'))
+
+随机数random模块：
+    ##涉及到返回随机数，随机字符，随机字符串or打乱列表元素时所用到的模块
+    random.randrange(1,10)：返回一个1-9间的随机数、random.randrange(0,100，2)：随机选取0-100间的偶数
+    random.randint(1,10)：返回一个1-10间的随机数
+    random.choice('ac1n1#@')：返回一个给定数据集合中的随机字符
+    random.random()：返回一个0-1间的随机浮点数、random.uniform(10,20),用于生成一个指定范围内的小数
+    random.sample('ac1n1#@'，3)：从多个字符中选取特定数量的字符 #['c','a','1']
+    random.shuffle(list1)：洗牌，打乱列表中元素的顺序
+    #生成随机字符串：import string; ''.join(random.sample(string.ascii_lowercase + string.digits,6))
+    扩展：range() 函数返回的是一个可迭代对象（类型是对象），而不是列表类型
+        ##range(1, 10)：1-9、range(10)：0-9、range(1, 10, 2)，2为步长，1，3，5，7，9
+        ##range(10,-1,-1)反向输出10,9,8,7,6,5,4,3,2,1,0。此时的结束值为-1，而-1取不到，因此取到0，长是-1，相当于每次-1
+        ##x = range(5,-1,-1)是range数据类型、x = list(range(5,-1,-1))将range数据类型转换成list数据类型。range()函数一般结合for循环使用。
+        ##结合range函数和random模块：random.choice(range(1, total+1))，最小为1，最大为total，从这个范围随机获取一个数
+
+序列化pickle&json模块：
+    ##pickle和json都有下面四个功能，用法一致。区别：json将数据类型(仅支持int\str\list\tuple\dict)转换为所有语言通用的字符串，pickle将数据类型(支持所有python数据类型)转换为只有python才能识别的bytes字符串。
+    ##工作中一般都是用json，pickle了解即可
+    dumps:数据类型-字符串(序列化的字符串)、loads:字符串-数据类型
+    dump:数据类型-字符串,再写入文件、load:读取文件的字符串-数据类型
+        ##dump和load是先进先出，先dump进去，则先load出来。一般不建议dump几次，dump一次，load一次即可。因为次数多了，不容易记住第几次dump的是什么数据，且如果多load了会报错，比如dump了两次，如果我们执行第三次load时即会报错
+        ##例子：list_str=json.dumps(list1)、list1=json.loads(list_str); with open('1.json','w') as fp: json.dump(list1,fp)、with open('1.json','r') as f: list1=json.load(f)
+
+hashlib加密模块：
+
+文件copy模块shutil：
+
+zipfile和tarfile模块用于压缩和解压缩：
+
+****正则表达式re模块：
+常用的表达式规则：. ^ 后面补充进来
+re的匹配语法：re.search找到第一个匹配的字符串、re.findall把所有匹配到的字符放到列表中返回、re.split以匹配到的字符当做列表分隔符把字符串分割为列表、re.sub匹配字符并替换
+    ##很少用：re.match从头开始匹配、re.fullmatch全部匹配
+    例子：re.split('[0-9]','a2b') #['a','b']、re.sub('[a-z]','0','ac1') #'001'
+    例子：re.search('.','alex').group() #'a' 、re.findall('\D+','ab1de') #['ab','de']
+    例子：a=re.search('([0-9]{2})([0-9]{2})','1234') a.group() #1234 a.groups() #('12','34')
+    例子：a=re.search('(?P<name>[0-9]{2})(?P<age>[0-9]{2})','1234') a.group() #('12','34') a.groupdict() #{'name':'12','age':'34'}
+扩展：
+    ##想去掉\的转义功能，变为普通字符1、r'\n' 2、'\\n'。比如re.search(r'\d','a12\d')，\d为数字，但是我们想找'\d'字符串，就可以加个r
+    ##扩展：[^] 不包含。(比如[^ab]为匹配除a或b外任意的字符)
+    ##findall：结果为列表、search：结果为match的特殊数据类型，用.group()返回匹配到的字符串, .groups()将group()返回的字符串分组显示<前提是正则表达式中用了()，一个括号为一组>、split：结果为列表、sub：结果为字符串、fullmatch：结果为match的特殊数据类型，与search一样
+    ##search匹配规则：对字符串，根据规则往后匹配，匹配到了即停止匹配并返回值，未匹配到则继续往后匹配
+re.compile(pattern,flags=0)：对匹配规则提前解析，提高匹配效率，不用每次匹配时都解析一次。
+    ##例子：p=re.compile('[0-9]{2}') p.search('a123').group() #'12'
+flags标志符：re.I忽略大小写、re.S使得.能匹配\n换行符、re.M多行模式
+    ##例子：re.search('efg','alexEFG',re.I)
+
+
